@@ -388,6 +388,7 @@ public class RegisterActivity extends Activity implements LoaderCallbacks<Cursor
                             if (token != null) {
                                 prefs.edit().putString(Tools.PACKAGE_ROOT + ".token", token).apply();
                                 prefs.edit().putInt(Tools.PACKAGE_ROOT + ".id", id).apply();
+                                prefs.edit().putString(Tools.PACKAGE_ROOT + ".username", mUsername).apply();
                             }
                         } else {
                             //ajax error, show error code

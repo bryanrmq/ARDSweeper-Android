@@ -28,7 +28,12 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="gdx-1.6.2" level="project" />
-    <orderEntry type="library" exported="" name="gdx-box2d-1.6.2" level="project" />
+    <orderEntry type="library" exported="" name="json-20141113" level="project" />
+    <orderEntry type="library" exported="" name="engine.io-client-0.5.1" level="project" />
+    <orderEntry type="library" exported="" name="socket.io-client-0.5.1" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-ws-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.4.0" level="project" />
     <orderEntry type="library" exported="" name="core.core-1.0" level="project" />
   </component>
 </module>

@@ -101,6 +101,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         int id = prefs.getInt(Tools.PACKAGE_ROOT + ".id", 0);
         if(!token.equals("token")) {
             Intent it = new Intent(LoginActivity.this, AndroidLauncher.class);
+            it.putExtra("token", token);
             LoginActivity.this.startActivity(it);
             finish();
         }
@@ -379,6 +380,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                             if (token != null) {
                                 prefs.edit().putString(Tools.PACKAGE_ROOT + ".token", token).apply();
                                 prefs.edit().putInt(Tools.PACKAGE_ROOT + ".id", id).apply();
+                                prefs.edit().putString(Tools.PACKAGE_ROOT + ".username", mUsername).apply();
+
                             }
                         } else {
                             //ajax error, show error code

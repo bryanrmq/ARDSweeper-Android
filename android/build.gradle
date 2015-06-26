@@ -113,5 +113,5 @@ idea {
 dependencies {
     compile files('libs/android-query.0.26.7.jar')
     compile 'com.google.android.gms:play-services:7.5.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    //compile 'com.android.support:appcompat-v7:22.2.0'
 }
