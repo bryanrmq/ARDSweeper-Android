@@ -5,7 +5,7 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -16,12 +16,14 @@ import java.util.ArrayList;
  */
 public class ARDSweeperSocket {
 
-    private ArrayList<JSONObject> map;
+    private ArrayList<String> map;
+    private JSONArray arrayMap;
 
     private Socket socket;
-    {
+
+    public ARDSweeperSocket(int port){
         try {
-            socket = IO.socket(Tools.API_ROOT);
+            socket = IO.socket(Tools.API_SERVER + ":" + port);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -61,36 +63,23 @@ public class ARDSweeperSocket {
         socket.on("full map", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Gdx.app.log("ARDSwepperLog", "args = " + args[0]);
 
+                Gdx.app.log("ARDSwepperLog", "args[0] getname = " + args[0]);
 
-                /*JSONObject obj = new JSONObject(args);
-                JSONArray json_map = obj.getJSONArray("map");
-
-                int size = json_map.length();
-                map = new ArrayList<JSONObject>();
-                for (int i = 0; i < size; i++) {
-                    JSONObject another_json_object = json_map.getJSONObject(i);
-                    //Blah blah blah...
-                    map.add(another_json_object);
-                }
-
-                //Finally
-                JSONObject[] jsons = new JSONObject[map.size()];
-                map.toArray(jsons);*/
+                arrayMap = (JSONArray) args[0];
 
                 socket.emit("full map client");
             }
         });
 
-
-
         socket.connect();
     }
 
 
-    public ArrayList<JSONObject> getMap(){
-        return map;
+
+
+    public JSONArray getArrayMap(){
+        return arrayMap;
     }
 
 }

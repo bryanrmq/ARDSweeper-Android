@@ -19,6 +19,7 @@ import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -362,13 +363,19 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                             //successful ajax call, show status code and json content
                             Toast.makeText(aq.getContext(), status.getCode() + ":" + json.toString(), Toast.LENGTH_LONG).show();
                             String token = null;
+                            int port = 0;
                             int id = 0;
+
+                            Log.d("serverLog", "json = " + json);
 
                             if (status.getCode() == 200) {
                                 connected[0] = true;
                             }
                             try {
                                 JSONObject user = (JSONObject) json.get("user");
+                                JSONObject server = (JSONObject) json.get("server");
+                                port = (int) server.get("port");
+                                Log.d("serverLog", "server = " + port);
                                 token = (String) user.get("token");
                                 id = (int) user.get("id");
                             } catch (JSONException e) {
@@ -380,8 +387,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                             if (token != null) {
                                 prefs.edit().putString(Tools.PACKAGE_ROOT + ".token", token).apply();
                                 prefs.edit().putInt(Tools.PACKAGE_ROOT + ".id", id).apply();
+                                prefs.edit().putInt(Tools.PACKAGE_ROOT + ".port", port).apply();
                                 prefs.edit().putString(Tools.PACKAGE_ROOT + ".username", mUsername).apply();
-
                             }
                         } else {
                             //ajax error, show error code
