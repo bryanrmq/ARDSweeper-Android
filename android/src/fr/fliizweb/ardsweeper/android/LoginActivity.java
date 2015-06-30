@@ -70,6 +70,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private View mLoginFormView;
     private Button mUsernameSignInButton;
 
+    private String gToken;
+
 
     AQuery aq;
 
@@ -77,39 +79,24 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-        /*ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayShowHomeEnabled(false);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setCustomView(R.layout.action_bar);
-
-        LayoutInflater mInflater = LayoutInflater.from(this);
-
-        View mCustomView = mInflater.inflate(R.layout.action_bar, null);
-        TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.actionbar_title);
-
-        mTitleTextView.setText("Connexion");
-        mTitleTextView.setGravity(Gravity.CENTER);
-
-        actionBar.setCustomView(mCustomView);*/
-
         SharedPreferences prefs = LoginActivity.this.getSharedPreferences(Tools.PACKAGE_ROOT, Context.MODE_PRIVATE);
-        String token = prefs.getString(Tools.PACKAGE_ROOT + ".token", "token");
-        int id = prefs.getInt(Tools.PACKAGE_ROOT + ".id", 0);
-        if(!token.equals("token")) {
-            Intent it = new Intent(LoginActivity.this, AndroidLauncher.class);
-            it.putExtra("token", token);
-            LoginActivity.this.startActivity(it);
-            finish();
-        }
+        gToken = prefs.getString(Tools.PACKAGE_ROOT + ".token", "token");
+
 
         setContentView(R.layout.activity_login);
-
         aq = new AQuery(this);
+
+        Log.d("serverLog", "gToken = " + gToken);
+        if(!gToken.equals("token")) {
+            mAuthTask = new UserLoginTask("", "", Tools.API_USER_CONNECT + "/" + gToken);
+            mAuthTask.execute((Void) null);
+
+            /*Intent it = new Intent(LoginActivity.this, AndroidLauncher.class);
+            it.putExtra("token", gToken);
+            LoginActivity.this.startActivity(it);
+            finish();*/
+        }
+
 
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
@@ -198,7 +185,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, password);
+            mAuthTask = new UserLoginTask(username, password, Tools.API_USER_CONNECT);
+
             mAuthTask.execute((Void) null);
         }
     }
@@ -340,10 +328,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         private final String mUsername;
         private final String mPassword;
+        private final String mPath;
 
-        UserLoginTask(String username, String password) {
+        UserLoginTask(String username, String password, String path) {
             mUsername = username;
             mPassword = password;
+            mPath = path;
         }
 
         @Override
@@ -355,8 +345,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
             final Boolean[] connected = {false};
 
+            Log.d("serverLog", "mPath = " + mPath + " || p = " + p);
+
+
             try {
-                aq.ajax(Tools.API_USER_CONNECT, p, JSONObject.class, new AjaxCallback<JSONObject>() {
+                aq.ajax(mPath, p, JSONObject.class, new AjaxCallback<JSONObject>() {
                     @Override
                     public void callback(String url, JSONObject json, AjaxStatus status) {
                         if (json != null) {
@@ -383,11 +376,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                             }
 
                             SharedPreferences prefs = LoginActivity.this.getSharedPreferences(Tools.PACKAGE_ROOT, Context.MODE_PRIVATE);
+                            prefs.edit().putInt(Tools.PACKAGE_ROOT + ".port", port).apply();
 
                             if (token != null) {
                                 prefs.edit().putString(Tools.PACKAGE_ROOT + ".token", token).apply();
                                 prefs.edit().putInt(Tools.PACKAGE_ROOT + ".id", id).apply();
-                                prefs.edit().putInt(Tools.PACKAGE_ROOT + ".port", port).apply();
                                 prefs.edit().putString(Tools.PACKAGE_ROOT + ".username", mUsername).apply();
                             }
                         } else {
@@ -434,14 +427,5 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             showProgress(false);
         }
     }
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent it = new Intent(LoginActivity.this, SplashScreenActivity.class);
-        LoginActivity.this.startActivity(it);
-        finish();
-        return true;
-
-    }*/
 }
 

@@ -28,7 +28,6 @@ public class Zone extends Actor {
 
                 socket.emit("position", posX, posY);
 
-                setVisible(false);
                 return true;
             }
         });
