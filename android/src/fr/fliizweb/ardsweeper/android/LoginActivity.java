@@ -69,16 +69,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private View mProgressView;
     private View mLoginFormView;
     private Button mUsernameSignInButton;
+    private Button mCancel;
 
     private String gToken;
 
-
     AQuery aq;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get token saved
         SharedPreferences prefs = LoginActivity.this.getSharedPreferences(Tools.PACKAGE_ROOT, Context.MODE_PRIVATE);
         gToken = prefs.getString(Tools.PACKAGE_ROOT + ".token", "token");
 
@@ -87,14 +89,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         aq = new AQuery(this);
 
         Log.d("serverLog", "gToken = " + gToken);
+
+        // If token exist
         if(!gToken.equals("token")) {
             mAuthTask = new UserLoginTask("", "", Tools.API_USER_CONNECT + "/" + gToken);
             mAuthTask.execute((Void) null);
 
-            /*Intent it = new Intent(LoginActivity.this, AndroidLauncher.class);
+            Intent it = new Intent(LoginActivity.this, AndroidLauncher.class);
             it.putExtra("token", gToken);
             LoginActivity.this.startActivity(it);
-            finish();*/
+            finish();
         }
 
 
@@ -115,11 +119,21 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         });
 
         mUsernameSignInButton = (Button) findViewById(R.id.username_sign_in_button);
-
         mUsernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        mCancel = (Button) findViewById(R.id.cancel);
+        mCancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent it = new Intent(LoginActivity.this, SplashScreenActivity.class);
+                LoginActivity.this.startActivity(it);
+                finish();
             }
         });
 
@@ -349,6 +363,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 
             try {
+                // mPath is the path where we want to request (token or not)
                 aq.ajax(mPath, p, JSONObject.class, new AjaxCallback<JSONObject>() {
                     @Override
                     public void callback(String url, JSONObject json, AjaxStatus status) {
@@ -378,6 +393,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                             SharedPreferences prefs = LoginActivity.this.getSharedPreferences(Tools.PACKAGE_ROOT, Context.MODE_PRIVATE);
                             prefs.edit().putInt(Tools.PACKAGE_ROOT + ".port", port).apply();
 
+                            // If token exist, we edit the player's informations
                             if (token != null) {
                                 prefs.edit().putString(Tools.PACKAGE_ROOT + ".token", token).apply();
                                 prefs.edit().putInt(Tools.PACKAGE_ROOT + ".id", id).apply();
@@ -390,6 +406,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     }
                 });
                 Thread.sleep(2000);
+                // If connected, we move to next screen
                 if (connected[0]) {
                     Intent it = new Intent(LoginActivity.this, AndroidLauncher.class);
                     LoginActivity.this.startActivity(it);

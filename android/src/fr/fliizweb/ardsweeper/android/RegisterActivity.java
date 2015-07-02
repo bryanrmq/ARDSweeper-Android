@@ -19,7 +19,6 @@ import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,6 +69,8 @@ public class RegisterActivity extends Activity implements LoaderCallbacks<Cursor
     private View mProgressView;
     private View mLoginFormView;
     private Button mSubscribe;
+    private Button mCancel;
+
 
 
     AQuery aq;
@@ -77,35 +78,6 @@ public class RegisterActivity extends Activity implements LoaderCallbacks<Cursor
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /*ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayShowHomeEnabled(false);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setCustomView(R.layout.action_bar);
-
-        LayoutInflater mInflater = LayoutInflater.from(this);
-
-        View mCustomView = mInflater.inflate(R.layout.action_bar, null);
-        TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.actionbar_title);
-
-        mTitleTextView.setText("Inscription");
-        mTitleTextView.setGravity(Gravity.CENTER);
-
-        actionBar.setCustomView(mCustomView);*/
-
-
-        SharedPreferences prefs = RegisterActivity.this.getSharedPreferences(Tools.PACKAGE_ROOT, Context.MODE_PRIVATE);
-        String token = prefs.getString(Tools.PACKAGE_ROOT + ".token", "token");
-        int id = prefs.getInt(Tools.PACKAGE_ROOT + ".id", 0);
-
-        if(!token.equals("token")) {
-            Intent it = new Intent(RegisterActivity.this, AndroidLauncher.class);
-            RegisterActivity.this.startActivity(it);
-            finish();
-        }
 
         setContentView(R.layout.activity_register);
 
@@ -130,8 +102,6 @@ public class RegisterActivity extends Activity implements LoaderCallbacks<Cursor
         mPasswordVerifyView = (EditText) findViewById(R.id.password_verify);
 
         mSubscribe = (Button) findViewById(R.id.subscribe);
-        Log.d("RegisterActivity", "button register = " + mSubscribe);
-
         mSubscribe.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,6 +110,17 @@ public class RegisterActivity extends Activity implements LoaderCallbacks<Cursor
                 } else {
                     mPasswordVerifyView.setError("Répétition incorrecte");
                 }
+            }
+        });
+
+        mCancel = (Button) findViewById(R.id.cancel);
+        mCancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent it = new Intent(RegisterActivity.this, SplashScreenActivity.class);
+                RegisterActivity.this.startActivity(it);
+                finish();
             }
         });
 
@@ -398,11 +379,9 @@ public class RegisterActivity extends Activity implements LoaderCallbacks<Cursor
                 });
                 Thread.sleep(2000);
                 if(connected[0]) {
-                    // Si les deux mots de passe correspondent
                     Intent it = new Intent(RegisterActivity.this, AndroidLauncher.class);
                     RegisterActivity.this.startActivity(it);
                     finish();
-
                 }
                 return false;
             } catch (InterruptedException e) {
@@ -434,13 +413,5 @@ public class RegisterActivity extends Activity implements LoaderCallbacks<Cursor
             showProgress(false);
         }
     }
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent it = new Intent(RegisterActivity.this, SplashScreenActivity.class);
-        RegisterActivity.this.startActivity(it);
-        finish();
-        return true;
-    }*/
 }
 

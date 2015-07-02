@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import fr.fliizweb.ardsweeper.ARDSweeper;
 
 public class LoadingScreen implements Screen {
+
     private ARDSweeper mGame;
     private BitmapFont bf_loadProgress;
     private long progress = 0;
@@ -25,13 +26,12 @@ public class LoadingScreen implements Screen {
     private GameScreen gameScreen;
 
     public LoadingScreen(Game game) {
+
+        // Declare and instantiate
         mGame = (ARDSweeper) game;
         bf_loadProgress = new BitmapFont();
-
-        //bf_loadProgress.setScale(2, 1);
         mShapeRenderer = new ShapeRenderer();
         startTime = TimeUtils.nanoTime();
-
         gameScreen = new GameScreen();
 
         initCamera();
@@ -41,7 +41,6 @@ public class LoadingScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth, screenHeight);
         camera.update();
-
     }
 
     @Override

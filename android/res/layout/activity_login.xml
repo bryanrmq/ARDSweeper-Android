@@ -69,6 +69,17 @@
                     android:padding="20px"
                     android:textColor="@color/white"
                     android:background="@drawable/button_shape" />
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Annuler"
+                    android:padding="20px"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_shape"
+                    android:layout_below="@+id/username_sign_in_button" />
             </RelativeLayout>
 
         </LinearLayout>

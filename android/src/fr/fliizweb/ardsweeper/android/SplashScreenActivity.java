@@ -24,16 +24,20 @@ public class SplashScreenActivity extends Activity implements View.OnClickListen
         btnRegister.setOnClickListener(this);
     }
 
+
     @Override
     public void onClick(View view) {
-        if(view == btnLogin){
-            Intent it = new Intent(SplashScreenActivity.this, LoginActivity.class);
-            SplashScreenActivity.this.startActivity(it);
-            finish();
-        } else if (view == btnRegister){
-            Intent it = new Intent(SplashScreenActivity.this, RegisterActivity.class);
-            SplashScreenActivity.this.startActivity(it);
-            finish();
-        }
+        Class nameActivity = null; // Declare class null
+
+        // For each button, we send the right activity
+        if(view == btnLogin)
+            nameActivity = LoginActivity.class;
+        else if(view == btnRegister)
+            nameActivity = RegisterActivity.class;
+
+
+        Intent it = new Intent(SplashScreenActivity.this, nameActivity);
+        SplashScreenActivity.this.startActivity(it);
+        finish();
     }
 }
